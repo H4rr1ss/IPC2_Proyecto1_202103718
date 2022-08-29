@@ -1,4 +1,5 @@
 from clases import Celula
+from lista_patrones import ListaPatron
 import webbrowser
 import os
 
@@ -16,37 +17,20 @@ class ListaCelula:
         
         elif self.primero.siguiente is None:
             self.primero.siguiente = actual
+            actual.anterior = self.primero
             self.ultimo = actual
         else:
             self.ultimo.siguiente = actual
+            actual.anterior = self.ultimo
             self.ultimo = actual
-
-    # POSIBLEMENTE SE BORRARA, DESCARTADA        
-    def appendInfectada(self, x, y):
-        actual = self.primero #LISTA
-        
-        while actual is not None:
-            if(int(actual.getPosX()) == int(x)) and (int(actual.getPosY()) == int(y)):
-                actual.setEstado("X")
-            actual = actual.siguiente
-
  
     def mostrarCelulas(self):
         actual = self.primero
         i = 1
         while actual is not None:
-            print("Celula " + str(i) + "-> X:" + str(actual.getPosX()) + ", Y:" + str(actual.getPosY()) + " | Dato: " + actual.getEstado())
+            print("Celula " + str(i) + "-> X:" + str(actual.getPosX()) + ", Y:" + str(actual.getPosY()) + " | Dato: " + str(actual.getEstado()))
             i +=1
             actual = actual.siguiente
-
-    #def mostarCelulasContagiadas(self):
-     #   actual = self.primero
-      #  i = 1
-       # while actual is not None:
-        #    if actual.getEstado() == "X":
-         #       return actual.getPosX(), actual.getPosY(), actual.getEstado()
-          #      i += 1#NECESITO RETORNAR EL NODO
-           # actual = actual.siguiente
 
     def returnCelula(self):
         return self.primero
@@ -55,67 +39,24 @@ class ListaCelula:
         nodo = self.primero
         i = 1
 
-        graphviz = 'digraph Patron{ \n node[shape =box, width = 2, height = 2]; \n ranksep = 0 \n nodesep = 0.1 \n subgraph Cluster_A{ \n label = "' + 'Paciente: '+ nombrePaciente + '| edad: ' + str(edad) + '"   \n fontcolor ="#FFFFFF" \n fontsize = 30 \n bgcolor ="#20B2AA" \n'
+        graphviz = 'digraph Patron{ \n node[shape =box, width = 1, height = 1]; \n ranksep = 0 \n subgraph Cluster_A{ \n label = "' + 'Paciente: '+ nombrePaciente + ' | edad: ' + str(edad) + '"   \n fontcolor ="#FFFFFF" \n fontsize = 40 \n bgcolor ="#20B2AA" \n'
 
         while nodo is not None:
-            if nodo.getEstado().lower() == "X".lower():
-                graphviz += 'node{}[fontcolor = "#FFFFFF" fillcolor = "yellow" style = filled]; \n'.format(i)
-            if nodo.getEstado().lower() == "O".lower():
-                graphviz += 'node{}[fillcolor = "blue" style = filled]; \n'.format(i)
+            if nodo.getEstado() == 1:
+                graphviz += 'node{}[fontcolor = "#FFFFFF" fillcolor = "#C2458F" style = filled]; \n'.format(i)
+            if nodo.getEstado() == 0:
+                graphviz += 'node{}[fillcolor = "#E6BF9C" style = filled]; \n'.format(i)
 
             nodo = nodo.siguiente
             i += 1
 
         i = 1
-        j = 1
+        j = 2
 
         for h in range((dimension*dimension)-1):
             graphviz += 'node{}->node{} \n'.format(i, j)
             i += 1
             j += 1
-        
-        # Conección de cabezales
-   
-
-
-
-
-
-
-
-
-        # ESTE ES EL CASO TOMANDO COMO EJEMPLO
-        #UNA MATRIZ
-        #               3X3 -> 9 NODOS
-
-        primero = 1
-
-        actual = 1
-        z = dimension
-
-        for actual in range((dimension*dimension)-1): # range(8)
-
-            if int(actual) == z: # Si (9) == (9)
-
-                z += dimension # z=9+3= 12
-
-                head = actual + 1 # head = 10
-                # primero = 7
-                graphviz += 'node{}->node{}\n'.format(primero, head)
-                # node7 -> node10
-
-                actual = head # actual = 10
-                primero = head # primero = 10
-
-            actual += 1 # actual = 9
-        
-        #1RA. -> z = 6, head = 4, primero = 4, actual = variable
-        #2DA. -> z = 9, head = 7, primero = 7, actual = variable
-        #3RA. -> z = 9, head = 7, primero = 7, actual = variable
-
-
-
-
 
         i = 1
         for h in range(dimension):
@@ -137,33 +78,196 @@ class ListaCelula:
         webbrowser.open(pdf)
 
 
-    # GETTERS
-    def getPosX(self, numero):
+
+
+    def validacionReglaUno(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
+        contador = 0
+
+
+        if (arribaNodoAnt is not None) and raiz.getEstado() == arribaNodoAnt.getEstado():
+            contador += 1
+
+        if (arribaNodoAct is not None) and raiz.getEstado() == arribaNodoAct.getEstado():
+            contador += 1
+
+        if (arribaNodoSig is not None) and raiz.getEstado() == arribaNodoSig.getEstado():
+            contador += 1
+
+
+
+
+
+
+        if raizNodoAnt is not None:
+            if str(raiz.getEstado()) == str(raiz.anterior.getEstado()):
+                contador += 1
+
+        if raizNodoSig is not None:
+            if str(raiz.getEstado()) == str(raiz.siguiente.getEstado()):
+                contador += 1
+
+
+
+
+
+
+
+
+        if (abajoNodoAnt is not None) and raiz.getEstado() == abajoNodoAnt.getEstado():
+            contador += 1
+
+        if (abajoNodoAct is not None) and raiz.getEstado() == abajoNodoAct.getEstado():
+            contador += 1
+
+        if (abajoNodoSig is not None) and raiz.getEstado() == abajoNodoSig.getEstado():
+            contador += 1
+
+        if contador == 2 or contador == 3:
+            print(" ----- INFECTADAS NUEVAS ----")
+            nuevoPatron.append(raiz.getPosX(), raiz.getPosY(), raiz.getEstado())
+        # SINO ES IGUAL A 2 O 3 ENTONCES SE SANA
+
+    def reglaUno(self, nuevoPatron, dimension):
+        raiz = self.primero
+        
+        while raiz is not None:
+            if raiz.getEstado() == 1:
+                # CON ESTO OBTENGO EL VALOR DE LAS POSICIONES
+                # ANTERIORES = NODO A LA IZQUIERDA DE LA RAIZ
+                # SIGUIENTES = NODO A LA DERECHA DE LA RAIZ
+
+                #           VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ
+                if int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == 0: #Esquina superior izquierda
+                    #Las de arriba seran None
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt = None
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == (dimension -1):#Esquina superior derecha
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoSig = None
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == (dimension - 1) and int(raiz.getPosY()) == 0:#Esquina inferior izquierda
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt = None
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == (dimension -1) and int(raiz.getPosY()) == (dimension -1):#Esquina inferior derecha
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoSig = None
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == 0: #Primera fila cualquier columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoAnt = raiz.anterior
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosY()) == 0: #Lateral columna 0
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt = None
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt = None
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosY()) == (dimension - 1): #Lateral última columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoSig = None
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoSig = None
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == (dimension - 1):#Ultima fila cualquier columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoSig = raiz.siguiente
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                else:#Caso ideal
+                    # NODOS DE ARRIBA Y NODOS DE ABAJO DE LA CELULA CONTAGIADA
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    
+                    #VALIDACION DE REGLA 1 ----------
+                    self.validacionReglaUno(raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+            raiz = raiz.siguiente
+        
+
+
+
+    def reglaDos(self, nuevoPatron):
+        raiz = self.primero
+
+        while raiz is not None:
+            if raiz.getEstado() == 0:
+                arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                # Si no existen arriba de la analizada devolverá None
+
+                abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()))
+
+
+
+            raiz = raiz.siguiente
+
+
+    def filasArriba(self, fil, col): #entran como int
         actual = self.primero
-        i = 1
+        fila_arriba = fil - 1
 
-        while actual is not None:
-            if i == numero:
-                return actual.getPosX()
-            actual = actual.siguiente
-            i += 1
+        if fil == 0:
+            return None, None, None
+        else:
+            while int(actual.getPosX()) != fila_arriba:
+                actual = actual.siguiente
 
-    def getPosY(self, numero):
-        actual = self.primero
-        i = 1
+            while int(actual.getPosX()) == fila_arriba:
+                if int(actual.getPosY()) == col:
+                    print("----- Filas arriba -----")
+                    print("anterior -> Y: " + str(actual.anterior.getPosY()))
+                    print("actual -> Y: " + str(actual.getPosY()))
+                    print("siguiente -> Y: " + str(actual.siguiente.getPosY()))
 
-        while actual is not None:
-            if i == numero:
-                return actual.getPosY()
-            actual = actual.siguiente
-            i += 1
+                    return actual.anterior, actual, actual.siguiente #retorno el NODO
+                actual = actual.siguiente
 
-    def getEstado(self, numero):
-        actual = self.primero
-        i = 1
+    # PENDIENTE VALIDACION SI FIL ES LA ULTIMA FILA DE LA MATRIZ
+    def filasAbajo(self, fil, col, dimension):
 
-        while actual is not None:
-            if i == numero:
-                return actual.getEstado()
-            actual = actual.siguiente
-            i += 1
+        actualAbajo = self.primero
+        fila_abajo = fil + 1
+        
+        if fila_abajo == dimension:
+            return None, None, None
+        else:
+            while int(actualAbajo.getPosX()) != fila_abajo:
+                actualAbajo = actualAbajo.siguiente
+
+            while int(actualAbajo.getPosX()) == fila_abajo:
+                if int(actualAbajo.getPosY()) == col:
+                    print("\n----- Filas abajo -----")
+                    print("anterior -> Y: " + str(actualAbajo.anterior.getPosY()))
+                    print("actual -> Y: " + str(actualAbajo.getPosY()))
+                    print("siguiente -> Y: " + str(actualAbajo.siguiente.getPosY()))
+
+                    return actualAbajo.anterior, actualAbajo, actualAbajo.siguiente #retorna el NODO
+                actualAbajo = actualAbajo.siguiente
