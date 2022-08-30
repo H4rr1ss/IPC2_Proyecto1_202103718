@@ -26,5 +26,13 @@ class ListaPatron:
             print("Celula " + " X:" + str(actual.getPosX()) + ", Y:" + str(actual.getPosY()) + " |Estado: " + str(actual.getEstado()))
             actual = actual.siguiente
 
+    def infectarSanas(self):
+        actual = self.primero
+
+        while actual is not None:
+            if actual.getEstado() == 0:
+                actual.setEstado(1)
+            actual = actual.siguiente
+
     def returnInfectada(self):
         return self.primero

@@ -77,10 +77,42 @@ class ListaCelula:
         os.system("dot.exe -Tpdf " + documento + " -o " + pdf)
         webbrowser.open(pdf)
 
+##----------------------------------------------------------------
 
 
 
-    def validacionReglaUno(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
+    def __filasArriba(self, fil, col): #entran como int
+        actual = self.primero
+        fila_arriba = fil - 1
+
+        if fil == 0:
+            return None, None, None
+        else:
+            while int(actual.getPosX()) != fila_arriba:
+                actual = actual.siguiente
+
+            while int(actual.getPosX()) == fila_arriba:
+                if int(actual.getPosY()) == col:
+                    return actual.anterior, actual, actual.siguiente #retorno el NODO
+                actual = actual.siguiente
+
+    def __filasAbajo(self, fil, col, dimension):
+
+        actualAbajo = self.primero
+        fila_abajo = fil + 1
+        
+        if fila_abajo == dimension:
+            return None, None, None
+        else:
+            while int(actualAbajo.getPosX()) != fila_abajo:
+                actualAbajo = actualAbajo.siguiente
+
+            while int(actualAbajo.getPosX()) == fila_abajo:
+                if int(actualAbajo.getPosY()) == col:
+                    return actualAbajo.anterior, actualAbajo, actualAbajo.siguiente #retorna el NODO
+                actualAbajo = actualAbajo.siguiente
+
+    def __validacionReglaUno(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
         contador = 0
 
 
@@ -93,11 +125,6 @@ class ListaCelula:
         if (arribaNodoSig is not None) and raiz.getEstado() == arribaNodoSig.getEstado():
             contador += 1
 
-
-
-
-
-
         if raizNodoAnt is not None:
             if str(raiz.getEstado()) == str(raiz.anterior.getEstado()):
                 contador += 1
@@ -105,13 +132,6 @@ class ListaCelula:
         if raizNodoSig is not None:
             if str(raiz.getEstado()) == str(raiz.siguiente.getEstado()):
                 contador += 1
-
-
-
-
-
-
-
 
         if (abajoNodoAnt is not None) and raiz.getEstado() == abajoNodoAnt.getEstado():
             contador += 1
@@ -125,9 +145,39 @@ class ListaCelula:
         if contador == 2 or contador == 3:
             print(" ----- INFECTADAS NUEVAS ----")
             nuevoPatron.append(raiz.getPosX(), raiz.getPosY(), raiz.getEstado())
-        # SINO ES IGUAL A 2 O 3 ENTONCES SE SANA
 
-    def reglaUno(self, nuevoPatron, dimension):
+    def __validacionReglaDos(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
+        contador = 0
+
+        if (arribaNodoAnt is not None) and arribaNodoAnt.getEstado() == 1:
+            contador += 1
+
+        if (arribaNodoAct is not None) and arribaNodoAct.getEstado() == 1:
+            contador += 1
+
+        if (arribaNodoSig is not None) and arribaNodoSig.getEstado() == 1:
+            contador += 1
+
+        if (raizNodoAnt is not None) and raizNodoAnt.getEstado() == 1:
+            contador += 1
+
+        if (raizNodoSig is not None) and raizNodoSig.getEstado() == 1:
+            contador += 1
+
+        if (abajoNodoAnt is not None) and abajoNodoAnt.getEstado() == 1:
+            contador += 1
+
+        if (abajoNodoAct is not None) and abajoNodoAct.getEstado() == 1:
+            contador += 1
+
+        if (abajoNodoSig is not None) and abajoNodoSig.getEstado() == 1:
+            contador += 1
+
+        if contador == 3:
+            print(" ----- INFECTADAS NUEVAS ----")
+            nuevoPatron.append(raiz.getPosX(), raiz.getPosY(), raiz.getEstado())
+        
+    def __reglaUno(self, nuevoPatron, dimension):
         raiz = self.primero
         
         while raiz is not None:
@@ -139,135 +189,169 @@ class ListaCelula:
                 #           VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ
                 if int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == 0: #Esquina superior izquierda
                     #Las de arriba seran None
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     raizNodoAnt = None
                     raizNodoSig = raiz.siguiente
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     abajoNodoAnt = None
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == (dimension -1):#Esquina superior derecha
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     raizNodoSig = None
                     raizNodoAnt = raiz.anterior
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     abajoNodoSig = None
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosX()) == (dimension - 1) and int(raiz.getPosY()) == 0:#Esquina inferior izquierda
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     arribaNodoAnt = None
                     raizNodoAnt = None
                     raizNodoSig = raiz.siguiente
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosX()) == (dimension -1) and int(raiz.getPosY()) == (dimension -1):#Esquina inferior derecha
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     arribaNodoSig = None
                     raizNodoSig = None
                     raizNodoAnt = raiz.anterior
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosX()) == 0: #Primera fila cualquier columna
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     raizNodoAnt = raiz.anterior
                     raizNodoSig = raiz.siguiente
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosY()) == 0: #Lateral columna 0
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     arribaNodoAnt = None
                     raizNodoAnt = None
                     raizNodoSig = raiz.siguiente
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     abajoNodoAnt = None
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosY()) == (dimension - 1): #Lateral última columna
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     arribaNodoSig = None
                     raizNodoSig = None
                     raizNodoAnt = raiz.anterior
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     abajoNodoSig = None
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 elif int(raiz.getPosX()) == (dimension - 1):#Ultima fila cualquier columna
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     raizNodoSig = raiz.siguiente
                     raizNodoAnt = raiz.anterior
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
-                    self.validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 else:#Caso ideal
                     # NODOS DE ARRIBA Y NODOS DE ABAJO DE LA CELULA CONTAGIADA
-                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
-                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
-                    
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    raizNodoAnt = raiz.anterior
+                    raizNodoSig = raiz.siguiente
                     #VALIDACION DE REGLA 1 ----------
-                    self.validacionReglaUno(raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
-
+                    self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
             raiz = raiz.siguiente
         
-
-
-
-    def reglaDos(self, nuevoPatron):
+    def __reglaDos(self, nuevoPatron, dimension):
         raiz = self.primero
 
         while raiz is not None:
             if raiz.getEstado() == 0:
-                arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
-                # Si no existen arriba de la analizada devolverá None
+                # CON ESTO OBTENGO EL VALOR DE LAS POSICIONES
+                # ANTERIORES = NODO A LA IZQUIERDA DE LA RAIZ
+                # SIGUIENTES = NODO A LA DERECHA DE LA RAIZ
 
-                abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()))
+                #           VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ
+                if int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == 0: #Esquina superior izquierda
+                    #Las de arriba seran None
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt = None
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
+                elif int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == (dimension -1):#Esquina superior derecha
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoSig = None
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
+                elif int(raiz.getPosX()) == (dimension - 1) and int(raiz.getPosY()) == 0:#Esquina inferior izquierda
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt = None
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
+                elif int(raiz.getPosX()) == (dimension -1) and int(raiz.getPosY()) == (dimension -1):#Esquina inferior derecha
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoSig = None
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == 0: #Primera fila cualquier columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoAnt = raiz.anterior
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosY()) == 0: #Lateral columna 0
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoAnt = None
+                    raizNodoAnt = None
+                    raizNodoSig = raiz.siguiente
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoAnt = None
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosY()) == (dimension - 1): #Lateral última columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    arribaNodoSig = None
+                    raizNodoSig = None
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    abajoNodoSig = None
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                elif int(raiz.getPosX()) == (dimension - 1):#Ultima fila cualquier columna
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    raizNodoSig = raiz.siguiente
+                    raizNodoAnt = raiz.anterior
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
+
+                else:#Caso ideal
+                    # NODOS DE ARRIBA Y NODOS DE ABAJO DE LA CELULA CONTAGIADA
+                    arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
+                    abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
+                    raizNodoAnt = raiz.anterior
+                    raizNodoSig = raiz.siguiente
+                    #VALIDACION DE REGLA 1 ----------
+                    self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
             raiz = raiz.siguiente
 
-
-    def filasArriba(self, fil, col): #entran como int
-        actual = self.primero
-        fila_arriba = fil - 1
-
-        if fil == 0:
-            return None, None, None
-        else:
-            while int(actual.getPosX()) != fila_arriba:
-                actual = actual.siguiente
-
-            while int(actual.getPosX()) == fila_arriba:
-                if int(actual.getPosY()) == col:
-                    print("----- Filas arriba -----")
-                    print("anterior -> Y: " + str(actual.anterior.getPosY()))
-                    print("actual -> Y: " + str(actual.getPosY()))
-                    print("siguiente -> Y: " + str(actual.siguiente.getPosY()))
-
-                    return actual.anterior, actual, actual.siguiente #retorno el NODO
-                actual = actual.siguiente
-
-    # PENDIENTE VALIDACION SI FIL ES LA ULTIMA FILA DE LA MATRIZ
-    def filasAbajo(self, fil, col, dimension):
-
-        actualAbajo = self.primero
-        fila_abajo = fil + 1
+    def comportamientoCelulas(self, nuevoPatron, dimension):
+        #Verifica que cumpla la regla 1
+        self.__reglaUno(nuevoPatron, dimension)
         
-        if fila_abajo == dimension:
-            return None, None, None
-        else:
-            while int(actualAbajo.getPosX()) != fila_abajo:
-                actualAbajo = actualAbajo.siguiente
-
-            while int(actualAbajo.getPosX()) == fila_abajo:
-                if int(actualAbajo.getPosY()) == col:
-                    print("\n----- Filas abajo -----")
-                    print("anterior -> Y: " + str(actualAbajo.anterior.getPosY()))
-                    print("actual -> Y: " + str(actualAbajo.getPosY()))
-                    print("siguiente -> Y: " + str(actualAbajo.siguiente.getPosY()))
-
-                    return actualAbajo.anterior, actualAbajo, actualAbajo.siguiente #retorna el NODO
-                actualAbajo = actualAbajo.siguiente
+        self.__reglaDos(nuevoPatron, dimension)
+        nuevoPatron.infectarSanas()
+        nuevoPatron.returnInfectadas()
+        return nuevoPatron

@@ -145,13 +145,14 @@ def menu_seleccionarPaciente(listaP):# Lista de pacientes
         print("\n -.-.-.-..-.-.--..-.-.-.-")
         #for n in range(periodos) --Va a hacer el rango que le coloqué yo
         nuevoPatron = ListaPatron()
-        listaC.reglaUno(nuevoPatron, dimension)#Retorna las infectadas 
-        listaC.reglaDos(nuevoPatron)
+        patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
+        #patronReglaUno = listaC.reglaUno(nuevoPatron, dimension)#Retorna las infectadas 
+        #listaC.reglaDos(nuevoPatron)
 
-        #listaC1 = convertirListaCelula(dimension, patronReglaUno)# Agregarle el patron de contagiadas
+        listaC1 = convertirListaCelula(dimension, patronFinal)# Agregarle el patron de contagiadas
         
         # GRAFICAR LA MATRIZ COPIA
-        #listaC1.graficarLista(nombre, edad, dimension)
+        listaC1.graficarLista(nombre, edad, dimension)
 
 
 
