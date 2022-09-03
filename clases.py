@@ -97,3 +97,17 @@ class Patron:
     
     def setEstado(self, estado):
         self.__estado = estado
+
+
+
+class PatronRejilla:
+    def __init__(self, patron):
+        self.__patron = patron
+        #NODO
+        self.siguiente = None
+
+    def getPatronRejilla(self):
+        return self.__patron
+
+    def setPatronRejilla(self, patron):
+        self.__patron = patron
