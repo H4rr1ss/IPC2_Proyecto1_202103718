@@ -2,7 +2,9 @@ from colorama import Fore
 from clases import Celula, Paciente, Patron
 from lista_patrones import ListaPatron
 from lista_celula import ListaCelula
+from lista_rejillaP import Lista_rejillaP
 from lista_simple import Lista_Paciente
+from lista_rejillaP import Lista_rejillaP
 import xml.etree.ElementTree as ET
 
 def cargar_pacientes(pacientes):
@@ -33,7 +35,7 @@ def cargar_pacientes(pacientes):
 
             elif datosXML.tag == "rejilla": # Recorre la etiqueta <rejilla>
                 celulas = ListaCelula()
-                patrones = ListaPatron()
+                patrones = ListaPatron() # Almacena el patron inicial de la rejilla
 
                 fila = 0
                 columna = 0
@@ -130,29 +132,67 @@ def menu_seleccionarPaciente(listaP):# Lista de pacientes
         print()
         #                ----- SE TOMAN LOS DATOS DEL PACIENTE SELECCIONADO -----
 
+        #                                                           primera iteración
         # AGARRO LOS DATOS DEL PACIENTE SELECCIONADO
         nombre, edad, periodos, dimension, celulas, patron = listaP.returnPaciente(int(entrada))
-
         # COPIA DE MATRIZ PACIENTE CON CONTAGIADAS ASIGNADAS A SU POSICIÓN
         listaC = convertirListaCelula(dimension, patron)# Agregarle el patron de contagiadas
-        
         # GRAFICAR LA MATRIZ COPIA
-        #listaC.graficarLista(nombre, edad, dimension) # patrones lo estoy ingresando como lista
+        listaC.graficarLista(nombre, edad, 0, dimension) # patrones lo estoy ingresando como lista
         
-
-
+        #Almacenará las listas de los patrones
+        almacenPatrones = Lista_rejillaP()
+        #almacenPatrones.append(patron)
         #listaC.mostrarCelulas()
-        print("\n -.-.-.-..-.-.--..-.-.-.-")
+        for elemento in range(periodos):
+            periodo = elemento + 1
+            nuevoPatron = ListaPatron() # Almacena el patron al aplicar las reglas
+
+            # ListaC es la lista base que se analizará
+            patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
+
+            # ListaC1 ahora es el nuevo patron con reglas
+            listaC1 = convertirListaCelula(dimension, patronFinal)
+
+            listaC1.graficarLista(nombre, edad, periodo, dimension)
+
+            almacenPatrones.append(patronFinal)#Almaceno mi lista de patron en otra lista
+            #patronFinal.returnInfectadas()
+
+            #ANALIZAR LOS PATRONES Y SI REPITEN
+            #almacenPatrones.returnListas()#TENGO UNA LISTA DE LAS LISTAS DE PATRONES
+            # almacenPatrones = [ #patron1, #patron2, #patronN, .... ]
+
+            if periodo == 1 or periodo > 1:
+                almacenPatrones.enfermedad(patron, periodo)
+            
+            #elif: analizo otro diferente al inicial
+                #pass
+            #elif periodo > 1:
+                #almacenPatrones.enfermedad(patronFinal, periodo)
+                #almacenPatrones.enfermedad(patron, periodo)
+
+            listaC = listaC1
+            listaC1 = None
+
+
+
+
+        print("--------------------------------------")
+        almacenPatrones.returnListas()
+
+        print("hola")
+
         #for n in range(periodos) --Va a hacer el rango que le coloqué yo
-        nuevoPatron = ListaPatron()
-        patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
+        #nuevoPatron = ListaPatron()
+        #patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
         #patronReglaUno = listaC.reglaUno(nuevoPatron, dimension)#Retorna las infectadas 
         #listaC.reglaDos(nuevoPatron)
 
-        listaC1 = convertirListaCelula(dimension, patronFinal)# Agregarle el patron de contagiadas
+        #listaC1 = convertirListaCelula(dimension, patronFinal)# Agregarle el patron de contagiadas
         
         # GRAFICAR LA MATRIZ COPIA
-        listaC1.graficarLista(nombre, edad, dimension)
+        #listaC1.graficarLista(nombre, edad, dimension)
 
 
 

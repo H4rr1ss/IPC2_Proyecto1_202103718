@@ -35,17 +35,17 @@ class ListaCelula:
     def returnCelula(self):
         return self.primero
     
-    def graficarLista(self, nombrePaciente, edad, dimension):
+    def graficarLista(self, nombrePaciente, edad, periodo, dimension):
         nodo = self.primero
         i = 1
 
-        graphviz = 'digraph Patron{ \n node[shape =box, width = 1, height = 1]; \n ranksep = 0 \n subgraph Cluster_A{ \n label = "' + 'Paciente: '+ nombrePaciente + ' | edad: ' + str(edad) + '"   \n fontcolor ="#FFFFFF" \n fontsize = 40 \n bgcolor ="#20B2AA" \n'
+        graphviz = 'digraph Patron{ \n node[shape =box, width = 1, height = 1]; \n edge[style = invis]; \n ranksep = 0 \n subgraph Cluster_A{ \n label = "' + '| Paciente: '+ nombrePaciente + ' | Edad: ' + str(edad) + ' | Periodo: ' + str(periodo) + ' |' + ' "   \n fontcolor ="black" \n fontsize = 41 \n bgcolor ="#F1DFB2" \n'
 
         while nodo is not None:
-            if nodo.getEstado() == 1:
-                graphviz += 'node{}[fontcolor = "#FFFFFF" fillcolor = "#C2458F" style = filled]; \n'.format(i)
-            if nodo.getEstado() == 0:
-                graphviz += 'node{}[fillcolor = "#E6BF9C" style = filled]; \n'.format(i)
+            if nodo.getEstado() == 1:#CONTAGIADAS
+                graphviz += 'node{}[fontcolor = "#59A94A" fillcolor = "#59A94A" style = filled]; \n'.format(i)
+            if nodo.getEstado() == 0:#SANAS
+                graphviz += 'node{}[fontcolor = "#EEAEBA" fillcolor = "#EEAEBA" style = filled]; \n'.format(i)
 
             nodo = nodo.siguiente
             i += 1
@@ -353,5 +353,5 @@ class ListaCelula:
         
         self.__reglaDos(nuevoPatron, dimension)
         nuevoPatron.infectarSanas()
-        nuevoPatron.returnInfectadas()
+        #nuevoPatron.returnInfectadas()
         return nuevoPatron
