@@ -24,111 +24,119 @@ class Lista_rejillaP:
 
         while actual is not None:
             listaPatron = actual.getPatronRejilla()#tomando la lista del primer patron
-            print(str(listaPatron.returnInfectadas()))#accediendo a los metodos de esa lista
             print(actual.getPatronRejilla())
 
             actual = actual.siguiente
 
-    def enfermedad(self, listaActual, periodo):
-        actual = self.primero
-        nodoListaActual = listaActual.returnInfectada()
 
-        while actual is not None:
-            listaPatron = actual.getPatronRejilla()
-            
-        # Voy a recorrer mis patrones con células contagiadas
-        # y comparar con la listaActual hasta percibir una similitud en alguna listaPatron
+
 
 
         # CONTARÁ CON 3 OPCIONES-----EN EL RANGO DE LOS PERIODOS ESTABLECIDOS-----
 
         #ANALIZO EL PATRON INICIAL
-            # 1. Que el patron se repita después de N periodos      -> CASO GRAVE
-            # 2. Que el patron se repita en el primero periodo N=1  -> MORIRÁ
+            # 1. Que el patron se repita después de N periodos      -> CASO GRAVE                   (SI)
+            # 2. Que el patron se repita en el primero periodo N=1  -> MORIRÁ                       (SI)
 
         #ANALIZO OTRO PATRON QUE NO SEA EL INICIAL
-            # 3. algún patron diferente al 1ro. se repita después de N periodos     -> CASO GRAVE
-            # 4. algún patron diferente al 1ro. se repita en el primero periodo N=1 -> MORIRÁ
+            # 3. algún patron diferente al 1ro. se repita después de N periodos     -> CASO GRAVE   ()
+            # 4. algún patron diferente al 1ro. se repita en el primero periodo N=1 -> MORIRÁ       ()
 
         #SI NO CUMPLE LOS ANTERIORES HARÁ LO SIGUIENTE:
-            # 5. que no se repita ni una vez el patron en los periodos establecidos -> CASO LEVE
+            # 5. que no se repita ni una vez el patron en los periodos establecidos -> CASO LEVE    ()
 
 
-            #ANALIZARÉ PATRON INICIAL   <---2CASOS--->
+    def casoA(self, listaActual):
+        actual = self.primero
+        nodoListaActual = listaActual.returnInfectada()
+        verificacion = None
+        periodo = 0
+
+        while actual is not None:#almacena diferentes patrones
+            periodo += 1
             contador = 0
+            listaPatron = actual.getPatronRejilla()
 
             while (nodoListaActual is not None):#va almacenar varias celulas
                 actualX = int(nodoListaActual.getPosX())
                 actualY = int(nodoListaActual.getPosY())
 
                 nodoListaPatron = listaPatron.returnInfectada()#Reinicio las posiciones
-                for i in range(listaActual.size):
-                    
+                for i in range(listaPatron.size):
+
                     patronX = int(nodoListaPatron.getPosX())
                     patronY = int(nodoListaPatron.getPosY())
 
                     if patronX == actualX and patronY == actualY:
-                        contador += 1
+                        contador += 1 # contador = 14
 
-
+                        if contador == listaActual.size and periodo == 1:
+                            verificacion = True
+                        elif contador == listaActual.size:
+                            verificacion = False
                     nodoListaPatron = nodoListaPatron.siguiente
 
                 nodoListaActual = nodoListaActual.siguiente
                 
+            #se analiza el N = 1 de patronInicial
+            if verificacion == True:#significa que si es igual el patron
+                return 1#Si no es True es porque va a seguir analizando los demas patrones
 
-            if contador < listaActual.size:
-                print("No es el mismo patron")
-                break
-            else:
-                print("es identico el patron")
-
-
+            if verificacion == False:
+                return 2
             actual = actual.siguiente#paso a la siguiente lista que tengo almacenada
 
+    def casoB(self):
+        base = self.primero
+
+        while base is not None:
+            periodo = 0
+            verificacion = None
+            listaActual = base.getPatronRejilla()
+            actual = base.siguiente
+
+            if actual is None:
+                break
+            else:
+                #EN LA SEGUNDA ITERACION ME TIRA EXCEPT
+                self.__derivadaB(listaActual, actual, periodo, verificacion)
+
+            base = base.siguiente
 
 
 
+    def __derivadaB(self, listaActual, actual, periodo, verificacion):
+        while actual is not None:
+            contador = 0
+            periodo += 1
+            listaPatron = actual.getPatronRejilla()
 
+            nodoListaActual = listaActual.returnInfectada()
+            while (nodoListaActual is not None):#va almacenar varias celulas
+                actualX = int(nodoListaActual.getPosX())
+                actualY = int(nodoListaActual.getPosY())
 
+                nodoListaPatron = listaPatron.returnInfectada()#Reinicio las posiciones
+                for i in range(listaPatron.size):
 
+                    patronX = int(nodoListaPatron.getPosX())
+                    patronY = int(nodoListaPatron.getPosY())
 
-#<celda f="0" c="5"/>
-#<celda f="1" c="5"/>
-#<celda f="2" c="5"/>
-#<celda f="4" c="1"/>
-#<celda f="4" c="2"/>
-#<celda f="4" c="3"/>
-#<celda f="4" c="6"/>
-#<celda f="4" c="7"/>
-#<celda f="4" c="8"/>
-#<celda f="6" c="4"/>
-#<celda f="7" c="4"/>
-#<celda f="8" c="4"/>
- 
+                    if patronX == actualX and patronY == actualY:
+                        contador += 1 # contador = 14
 
+                        if contador == listaActual.size and periodo == 1:
+                            verificacion = True
+                        elif contador == listaActual.size:
+                            verificacion = False
+                    nodoListaPatron = nodoListaPatron.siguiente
 
+                nodoListaActual = nodoListaActual.siguiente
 
-#<celda f="0" c="0"/>
-#<celda f="0" c="1"/>
-#<celda f="0" c="8"/>
-#<celda f="0" c="9"/>
-#<celda f="1" c="0"/>
-#<celda f="1" c="1"/>
-#<celda f="1" c="8"/>
-#<celda f="1" c="9"/>
-#<celda f="4" c="1"/>
-#<celda f="4" c="2"/>
-#<celda f="4" c="7"/>
-#<celda f="4" c="8"/>
-#<celda f="5" c="1"/>
-#<celda f="5" c="2"/>
-#<celda f="5" c="7"/>
-#<celda f="5" c="8"/>
-#<celda f="8" c="0"/>
-#<celda f="8" c="1"/>
-#<celda f="8" c="8"/>
-#<celda f="8" c="9"/>
-#<celda f="9" c="0"/>
-#<celda f="9" c="1"/>
-#<celda f="9" c="8"/>
-#<celda f="9" c="9"/>
+            if verificacion == True:#significa que si es igual el patron
+                return 1#Si no es True es porque va a seguir analizando los demas patrones
+
+            if verificacion == False:
+                return 2
+
+            actual = actual.siguiente
