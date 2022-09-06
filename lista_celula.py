@@ -1,5 +1,4 @@
 from clases import Celula
-from lista_patrones import ListaPatron
 import webbrowser
 import os
 
@@ -78,9 +77,6 @@ class ListaCelula:
         webbrowser.open(pdf)
 
 ##----------------------------------------------------------------
-
-
-
     def __filasArriba(self, fil, col): #entran como int
         actual = self.primero
         fila_arriba = fil - 1
@@ -115,7 +111,6 @@ class ListaCelula:
     def __validacionReglaUno(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
         contador = 0
 
-
         if (arribaNodoAnt is not None) and raiz.getEstado() == arribaNodoAnt.getEstado():
             contador += 1
 
@@ -125,13 +120,11 @@ class ListaCelula:
         if (arribaNodoSig is not None) and raiz.getEstado() == arribaNodoSig.getEstado():
             contador += 1
 
-        if raizNodoAnt is not None:
-            if str(raiz.getEstado()) == str(raiz.anterior.getEstado()):
-                contador += 1
+        if (raizNodoAnt is not None) and str(raiz.getEstado()) == str(raiz.anterior.getEstado()):
+            contador += 1
 
-        if raizNodoSig is not None:
-            if str(raiz.getEstado()) == str(raiz.siguiente.getEstado()):
-                contador += 1
+        if (raizNodoSig is not None) and str(raiz.getEstado()) == str(raiz.siguiente.getEstado()):
+            contador += 1
 
         if (abajoNodoAnt is not None) and raiz.getEstado() == abajoNodoAnt.getEstado():
             contador += 1
@@ -143,7 +136,6 @@ class ListaCelula:
             contador += 1
 
         if contador == 2 or contador == 3:
-            print(" ----- INFECTADAS NUEVAS ----")
             nuevoPatron.append(raiz.getPosX(), raiz.getPosY(), raiz.getEstado())
 
     def __validacionReglaDos(self, raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron):
@@ -174,7 +166,6 @@ class ListaCelula:
             contador += 1
 
         if contador == 3:
-            print(" ----- INFECTADAS NUEVAS ----")
             nuevoPatron.append(raiz.getPosX(), raiz.getPosY(), raiz.getEstado())
         
     def __reglaUno(self, nuevoPatron, dimension):
@@ -182,11 +173,7 @@ class ListaCelula:
         
         while raiz is not None:
             if raiz.getEstado() == 1:
-                # CON ESTO OBTENGO EL VALOR DE LAS POSICIONES
-                # ANTERIORES = NODO A LA IZQUIERDA DE LA RAIZ
-                # SIGUIENTES = NODO A LA DERECHA DE LA RAIZ
-
-                #           VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ
+                #           -----VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ-----
                 if int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == 0: #Esquina superior izquierda
                     #Las de arriba seran None
                     arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
@@ -253,12 +240,10 @@ class ListaCelula:
                     self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 else:#Caso ideal
-                    # NODOS DE ARRIBA Y NODOS DE ABAJO DE LA CELULA CONTAGIADA
                     arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     raizNodoAnt = raiz.anterior
                     raizNodoSig = raiz.siguiente
-                    #VALIDACION DE REGLA 1 ----------
                     self.__validacionReglaUno(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
             raiz = raiz.siguiente
         
@@ -267,11 +252,7 @@ class ListaCelula:
 
         while raiz is not None:
             if raiz.getEstado() == 0:
-                # CON ESTO OBTENGO EL VALOR DE LAS POSICIONES
-                # ANTERIORES = NODO A LA IZQUIERDA DE LA RAIZ
-                # SIGUIENTES = NODO A LA DERECHA DE LA RAIZ
-
-                #           VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ
+                #           -----VALIDACIONES DE LOS 8 CASOS PARA LA MATRIZ-----
                 if int(raiz.getPosX()) == 0 and int(raiz.getPosY()) == 0: #Esquina superior izquierda
                     #Las de arriba seran None
                     arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
@@ -338,20 +319,16 @@ class ListaCelula:
                     self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
 
                 else:#Caso ideal
-                    # NODOS DE ARRIBA Y NODOS DE ABAJO DE LA CELULA CONTAGIADA
                     arribaNodoAnt, arribaNodoAct, arribaNodoSig = self.__filasArriba(int(raiz.getPosX()), int(raiz.getPosY()))
                     abajoNodoAnt, abajoNodoAct, abajoNodoSig = self.__filasAbajo(int(raiz.getPosX()), int(raiz.getPosY()), dimension)
                     raizNodoAnt = raiz.anterior
                     raizNodoSig = raiz.siguiente
-                    #VALIDACION DE REGLA 1 ----------
                     self.__validacionReglaDos(raizNodoAnt, raizNodoSig, raiz, arribaNodoAnt, arribaNodoAct, arribaNodoSig, abajoNodoAnt, abajoNodoAct, abajoNodoSig, nuevoPatron)
             raiz = raiz.siguiente
 
     def comportamientoCelulas(self, nuevoPatron, dimension):
-        #Verifica que cumpla la regla 1
+
         self.__reglaUno(nuevoPatron, dimension)
-        
         self.__reglaDos(nuevoPatron, dimension)
         nuevoPatron.infectarSanas()
-        #nuevoPatron.returnInfectadas()
         return nuevoPatron

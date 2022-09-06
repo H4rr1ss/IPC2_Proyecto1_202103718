@@ -1,16 +1,14 @@
 class Paciente:
     def __init__(self, nombre = None, edad = None, periodos = None, dimension = None, celulas = None, patrones = None):
-        # Datos personales
         self.__nombre = nombre
         self.__edad = edad
-        # Periodos
         self.__periodos = periodos
-        # Dimensión
         self.__dimension = dimension
         # Rejillas
         self.__celulas = celulas
         self.__estado = ""
         self.__patrones = patrones
+
         # NODO
         self.siguiente = None
 
@@ -69,6 +67,7 @@ class Celula:
     def getPosY(self):
         return self.__posY
     
+#--------------------------------------------------------------------
 class Patron:
     def __init__(self, posX, posY, estado):
         self.__estado = estado
@@ -98,11 +97,11 @@ class Patron:
     def setEstado(self, estado):
         self.__estado = estado
 
-
-
+#--------------------------------------------------------------------
 class PatronRejilla:
     def __init__(self, patron):
         self.__patron = patron
+
         #NODO
         self.siguiente = None
 

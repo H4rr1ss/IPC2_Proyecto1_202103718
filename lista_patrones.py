@@ -21,13 +21,6 @@ class ListaPatron:
             self.ultimo.siguiente = nuevo
             self.ultimo = nuevo
 
-    def returnInfectadas(self):
-        actual = self.primero
-
-        while actual is not None:
-            print("Celula " + " X:" + str(actual.getPosX()) + ", Y:" + str(actual.getPosY()) + " |Estado: " + str(actual.getEstado()))
-            actual = actual.siguiente
-
     def infectarSanas(self):
         actual = self.primero
 

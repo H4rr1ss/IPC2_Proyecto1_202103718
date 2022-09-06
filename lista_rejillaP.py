@@ -19,33 +19,6 @@ class Lista_rejillaP:
             self.ultimo.siguiente = nuevo
             self.ultimo = nuevo
 
-    def returnListas(self):
-        actual = self.primero
-
-        while actual is not None:
-            listaPatron = actual.getPatronRejilla()#tomando la lista del primer patron
-            print(actual.getPatronRejilla())
-
-            actual = actual.siguiente
-
-
-
-
-
-        # CONTARÁ CON 3 OPCIONES-----EN EL RANGO DE LOS PERIODOS ESTABLECIDOS-----
-
-        #ANALIZO EL PATRON INICIAL
-            # 1. Que el patron se repita después de N periodos      -> CASO GRAVE                   (SI)
-            # 2. Que el patron se repita en el primero periodo N=1  -> MORIRÁ                       (SI)
-
-        #ANALIZO OTRO PATRON QUE NO SEA EL INICIAL
-            # 3. algún patron diferente al 1ro. se repita después de N periodos     -> CASO GRAVE   ()
-            # 4. algún patron diferente al 1ro. se repita en el primero periodo N=1 -> MORIRÁ       ()
-
-        #SI NO CUMPLE LOS ANTERIORES HARÁ LO SIGUIENTE:
-            # 5. que no se repita ni una vez el patron en los periodos establecidos -> CASO LEVE    ()
-
-
     def casoA(self, listaActual):
         actual = self.primero
         nodoListaActual = listaActual.returnInfectada()
@@ -68,7 +41,7 @@ class Lista_rejillaP:
                     patronY = int(nodoListaPatron.getPosY())
 
                     if patronX == actualX and patronY == actualY:
-                        contador += 1 # contador = 14
+                        contador += 1
 
                         if contador == listaActual.size and periodo == 1:
                             verificacion = True
@@ -98,12 +71,8 @@ class Lista_rejillaP:
             if actual is None:
                 break
             else:
-                #EN LA SEGUNDA ITERACION ME TIRA EXCEPT
                 self.__derivadaB(listaActual, actual, periodo, verificacion)
-
             base = base.siguiente
-
-
 
     def __derivadaB(self, listaActual, actual, periodo, verificacion):
         while actual is not None:
@@ -123,7 +92,7 @@ class Lista_rejillaP:
                     patronY = int(nodoListaPatron.getPosY())
 
                     if patronX == actualX and patronY == actualY:
-                        contador += 1 # contador = 14
+                        contador += 1
 
                         if contador == listaActual.size and periodo == 1:
                             verificacion = True
@@ -138,5 +107,4 @@ class Lista_rejillaP:
 
             if verificacion == False:
                 return 2
-
             actual = actual.siguiente

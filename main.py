@@ -1,11 +1,10 @@
 from unittest import result
 from colorama import Fore
-from clases import Celula, Paciente, Patron
+from clases import Paciente
 from lista_patrones import ListaPatron
 from lista_celula import ListaCelula
 from lista_rejillaP import Lista_rejillaP
 from lista_simple import Lista_Paciente
-from lista_rejillaP import Lista_rejillaP
 import xml.etree.ElementTree as ET
 
 def cargar_pacientes(pacientes):
@@ -54,7 +53,7 @@ def cargar_pacientes(pacientes):
     
         paciente = Paciente(nombre, edad, periodos, dimension, celulas, patrones) # Creo objeto Paciente con sus atributos
         lista_pacientesXML.append(paciente)
-     
+    
     return lista_pacientesXML # Retorna la lista de pacientes
         
 def opciones_menu():
@@ -62,7 +61,8 @@ def opciones_menu():
     print(Fore.CYAN + "     |       1. Cargar archivo XML       |")
     print(Fore.CYAN + "     |       2. Mostrar pacientes        |")
     print(Fore.CYAN + "     |       3. Eligir un paciente       |")
-    print(Fore.CYAN + "     |       4. Salir                    |")
+    print(Fore.CYAN + "     |       4. Generar archivo XML      |")
+    print(Fore.CYAN + "     |       5. Salir                    |")
     print(Fore.CYAN + "     -------------------------------------")
 
 # Menú general
@@ -117,56 +117,55 @@ def menu():
                 print(Fore.RED + "   |    ERROR: Datos no cargados     |")
                 print(Fore.RED + "   -----------------------------------\n")
                 print(Fore.LIGHTWHITE_EX + "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n")
+
+        elif opcion == "4":# Generar archivo xml
+            print("xml generado")
             
 # Submenú de seleccionar paciente
 def menu_seleccionarPaciente(listaP):# Lista de pacientes
     try:
         entrada = 0
-
         if entrada == 0:
             print(Fore.YELLOW + "\n  ----------------------------------------------------")#12
             print(Fore.LIGHTGREEN_EX + "           ----------------------------")#17
             print(Fore.LIGHTGREEN_EX + "           |  Seleccione un paciente  |")
             print(Fore.LIGHTGREEN_EX + "           ----------------------------\n")
 
-        entrada = input("  Digite el paciente que desea seleccionar: ")
-        print()
+        entrada = input("  Digite el paciente que desea seleccionar: \n")
         #                ----- SE TOMAN LOS DATOS DEL PACIENTE SELECCIONADO -----
 
-        #                                                           primera iteración
-        # AGARRO LOS DATOS DEL PACIENTE SELECCIONADO
+        # Agarro los datos del paciente seleccionado
         nombre, edad, periodos, dimension, celulas, patron = listaP.returnPaciente(int(entrada))
-        # COPIA DE MATRIZ PACIENTE CON CONTAGIADAS ASIGNADAS A SU POSICIÓN
-        listaC = convertirListaCelula(dimension, patron)# Agregarle el patron de contagiadas
-        # GRAFICAR LA MATRIZ COPIA
-        listaC.graficarLista(nombre, edad, 0, dimension) # patrones lo estoy ingresando como lista
+
+        # Realizo una copia de la matriz paciente con sus respectivas celulas contagiadas
+        rejilla = convertirListaCelula(dimension, patron)
+
+        # Grafico la el patron inicial
+        rejilla.graficarLista(nombre, edad, "base", dimension) # patrones lo estoy ingresando como lista
         
         #Almacenará las listas de los patrones
         almacenPatrones = Lista_rejillaP()
-        #almacenPatrones.append(patron)
-        #listaC.mostrarCelulas()
-        for elemento in range(periodos):
-            periodo = elemento + 1
+
+        for i in range(periodos):
+            periodo = i + 1
             nuevoPatron = ListaPatron() # Almacena el patron al aplicar las reglas
 
-            # ListaC es la lista base que se analizará
-            patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
+            # rejilla es la lista base que se analizará
+            patronFinal = rejilla.comportamientoCelulas(nuevoPatron, dimension)
 
-            # ListaC1 ahora es el nuevo patron con reglas
-            listaC1 = convertirListaCelula(dimension, patronFinal)
+            # rejillaFinal ahora es el nuevo patron con reglas
+            rejillaFinal = convertirListaCelula(dimension, patronFinal)
+            rejillaFinal.graficarLista(nombre, edad, periodo, dimension)
 
-            listaC1.graficarLista(nombre, edad, periodo, dimension)
-
-            almacenPatrones.append(patronFinal)#Almaceno mi lista de patron en otra lista
-
-            #almacenPatrones.returnListas()#TENGO UNA LISTA DE LAS LISTAS DE PATRONES
-            # almacenPatrones = [ #patron1, #patron2, #patronN, .... ]
-            listaC = listaC1
-            listaC1 = None
+            # Almaceno mi lista de patron en otra lista
+            almacenPatrones.append(patronFinal)# almacenPatrones = [ #patron1, #patron2, #patronN, .... ]
+            
+            rejilla = rejillaFinal
+            rejillaFinal = None
 
         determinarEnfermedad(almacenPatrones, patron)
         print("--------------------------------------")
-        almacenPatrones.returnListas()
+        #almacenPatrones.returnListas()
 
         print(Fore.YELLOW + "\n  ----------------------------------------------------")#12
     except:
@@ -188,7 +187,6 @@ def convertirListaCelula(dimension, ListaCont):
             lista.append(0, fila, columna)
         fila += 1
 
-    lista.mostrarCelulas()
     celulaNormal = lista.returnCelula()
 
     while celulaInfectada is not None:
@@ -203,34 +201,23 @@ def appendInfected(nodoCelula, x, y):
         nodoCelula = nodoCelula.siguiente
 
 def determinarEnfermedad(listaPatrones, patronInicial):
-    #LUEGO DE HABER APLICADO LOS N PERIODOS, ANALIZO TODOS LOS PATRONES
-    if patronInicial is not None:#analizo el patronInicial inicial
-        resultado = listaPatrones.casoA(patronInicial)
-
-        if resultado == 1:
-            print("El paciente morirá")
-            #break
-        elif resultado == 2:
-            print("El paciente tiene enfermedad grave")
-            #break
-
-    listaPatrones.returnListas()
-    
-    res = listaPatrones.casoB()
-
-    if res == 1:
+    resultadoCasoA = listaPatrones.casoA(patronInicial)
+    if resultadoCasoA == 1:
         print("El paciente morirá")
         #break
-    elif res == 2:
+    elif resultadoCasoA == 2:
         print("El paciente tiene enfermedad grave")
         #break
 
-    if res == None and resultado == None:
-        print("sufre una enfermedad leve")
-    #if patronFinal is not None: #analizo otro diferente al inicial
-        #listaPatrones.enfermedad(patronFinal, periodo)#Enfermedad grave o muerte
+    resultadoCasoB = listaPatrones.casoB()
+    if resultadoCasoB == 1:
+        print("El paciente morirá")
+        #break
+    elif resultadoCasoB == 2:
+        print("El paciente tiene enfermedad grave")
+        #break
 
-    #if resultado is None: #No retorno nada de las anteriores
-        #print("Ya que no ocurrio ninguno de los 4 casos anteriores, significa que su enfermedad es leve")
+    if (resultadoCasoA == None) and (resultadoCasoB == None):
+        print("sufre una enfermedad leve")
 
 menu()
