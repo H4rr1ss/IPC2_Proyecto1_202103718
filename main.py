@@ -1,3 +1,4 @@
+from unittest import result
 from colorama import Fore
 from clases import Celula, Paciente, Patron
 from lista_patrones import ListaPatron
@@ -157,44 +158,15 @@ def menu_seleccionarPaciente(listaP):# Lista de pacientes
             listaC1.graficarLista(nombre, edad, periodo, dimension)
 
             almacenPatrones.append(patronFinal)#Almaceno mi lista de patron en otra lista
-            #patronFinal.returnInfectadas()
 
-            #ANALIZAR LOS PATRONES Y SI REPITEN
             #almacenPatrones.returnListas()#TENGO UNA LISTA DE LAS LISTAS DE PATRONES
             # almacenPatrones = [ #patron1, #patron2, #patronN, .... ]
-
-            if periodo == 1 or periodo > 1:
-                almacenPatrones.enfermedad(patron, periodo)
-            
-            #elif: analizo otro diferente al inicial
-                #pass
-            #elif periodo > 1:
-                #almacenPatrones.enfermedad(patronFinal, periodo)
-                #almacenPatrones.enfermedad(patron, periodo)
-
             listaC = listaC1
             listaC1 = None
 
-
-
-
+        determinarEnfermedad(almacenPatrones, patron)
         print("--------------------------------------")
         almacenPatrones.returnListas()
-
-        print("hola")
-
-        #for n in range(periodos) --Va a hacer el rango que le coloqué yo
-        #nuevoPatron = ListaPatron()
-        #patronFinal = listaC.comportamientoCelulas(nuevoPatron, dimension)
-        #patronReglaUno = listaC.reglaUno(nuevoPatron, dimension)#Retorna las infectadas 
-        #listaC.reglaDos(nuevoPatron)
-
-        #listaC1 = convertirListaCelula(dimension, patronFinal)# Agregarle el patron de contagiadas
-        
-        # GRAFICAR LA MATRIZ COPIA
-        #listaC1.graficarLista(nombre, edad, dimension)
-
-
 
         print(Fore.YELLOW + "\n  ----------------------------------------------------")#12
     except:
@@ -229,5 +201,36 @@ def appendInfected(nodoCelula, x, y):
         if(int(nodoCelula.getPosX()) == int(x)) and (int(nodoCelula.getPosY()) == int(y)):
             nodoCelula.setEstado(1)
         nodoCelula = nodoCelula.siguiente
+
+def determinarEnfermedad(listaPatrones, patronInicial):
+    #LUEGO DE HABER APLICADO LOS N PERIODOS, ANALIZO TODOS LOS PATRONES
+    if patronInicial is not None:#analizo el patronInicial inicial
+        resultado = listaPatrones.casoA(patronInicial)
+
+        if resultado == 1:
+            print("El paciente morirá")
+            #break
+        elif resultado == 2:
+            print("El paciente tiene enfermedad grave")
+            #break
+
+    listaPatrones.returnListas()
+    
+    res = listaPatrones.casoB()
+
+    if res == 1:
+        print("El paciente morirá")
+        #break
+    elif res == 2:
+        print("El paciente tiene enfermedad grave")
+        #break
+
+    if res == None and resultado == None:
+        print("sufre una enfermedad leve")
+    #if patronFinal is not None: #analizo otro diferente al inicial
+        #listaPatrones.enfermedad(patronFinal, periodo)#Enfermedad grave o muerte
+
+    #if resultado is None: #No retorno nada de las anteriores
+        #print("Ya que no ocurrio ninguno de los 4 casos anteriores, significa que su enfermedad es leve")
 
 menu()
