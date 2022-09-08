@@ -171,7 +171,7 @@ def menu_seleccionarPaciente(listaP):# Lista de pacientes
                 
             determinarEnfermedad(almacenPatrones, patron, listaP, nombre)
             #almacenPatrones.returnListas()
-
+            print(Fore.YELLOW + "  ---------------------ANALIZADO CORRECTAMENTE------------------\n")#12
             print(Fore.YELLOW + "\n  ----------------------------------------------------\n")#12
             print(Fore.LIGHTWHITE_EX + "\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n")
         else:
@@ -214,19 +214,24 @@ def determinarEnfermedad(listaPatrones, patronInicial, listaP, nombre):
     actual = listaP.h(nombre)
     if resultadoCasoA == 1:
         actual.setEstado("mortal")
+        print("mortal")
         
     elif resultadoCasoA == 2:
         actual.setEstado("grave")
+        print("grave")
 
     resultadoCasoB = listaPatrones.casoB()
     if resultadoCasoB == 1:
         actual.setEstado("mortal")
+        print("mortal")
 
     elif resultadoCasoB == 2:
         actual.setEstado("grave")
+        print("grave")
 
     if (resultadoCasoA == None) and (resultadoCasoB == None):
         actual.setEstado("leve")
+        print("leve")
 
 def generarPDF(periodos, nombre):
     pdf = FPDF(orientation = "P", unit = "mm", format = "A4")
