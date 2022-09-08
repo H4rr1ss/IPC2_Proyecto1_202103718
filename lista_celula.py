@@ -72,9 +72,8 @@ class ListaCelula:
         documento = 'grafica' + str(nombrePaciente) + '.txt'
         with open(documento, 'w') as grafica:
             grafica.write(graphviz)
-        pdf = 'grafica' + str(nombrePaciente) + '.pdf'
-        os.system("dot.exe -Tpdf " + documento + " -o " + pdf)
-        webbrowser.open(pdf)
+        pdf = 'grafica' + str(periodo) + '.jpg'
+        os.system("dot.exe -Tjpg " + documento + " -o " + pdf)
 
 ##----------------------------------------------------------------
     def __filasArriba(self, fil, col): #entran como int

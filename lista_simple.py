@@ -26,7 +26,6 @@ class Lista_Paciente:
                 cadena += "   " + str(contador) + "| Nombre: " + actual.getNombre() + " -> Edad: " + str(actual.getEdad())
                 cadena += "\n       Rejilla de paciente:"
                 cadena += "\n        "
-                cadena += str(actual.getListaCelda())
                 if actual.siguiente is not None:
                     actual = actual.siguiente
                     cadena += "\n"
@@ -35,6 +34,53 @@ class Lista_Paciente:
             else:
                 break
         print(cadena)
+
+    def returnP(self):
+        return self.raiz
+
+    def h(self, nombre):
+        actual = self.raiz
+
+        while actual is not None:
+            if actual.getNombre() == nombre:
+                return actual
+            actual = actual.siguiente
+
+
+
+    def generarSalidaXML2(self):
+        actual = self.raiz
+
+        xml = '<?xml version ='+ '"' + str(1.0) + '"' + ' encoding = ' + str('"UTF-8"') + '?>\n'
+        xml += '<pacientes>\n'
+
+        while actual is not None:
+            xml += '    <paciente>\n'
+            xml += '        <datospersonales>\n'
+            xml += '            <nombre>' + actual.getNombre() + '</nombre>\n'
+            xml += '            <edad>' + str(actual.getEdad()) + '</edad>\n'
+            xml += '        </datospersonales>\n'
+            xml += '        <periodos>' + str(actual.getPeriodo()) + '</periodos>\n'
+            xml += '        <m>' + str(actual.getDimension()) + '</m>\n'
+            xml += '        <resultado>' + actual.getEstado() + '</resultado>\n'
+            xml += '        <n>' + str(actual.getPeriodoContagiado()) + '</n>\n'
+            xml += '    </paciente>\n'
+
+            actual = actual.siguiente
+
+        xml += '</pacientes>'
+
+        documento = 'SalidaXML' + '.xml'
+        with open(documento, 'w') as grafica:
+            grafica.write(xml)
+
+
+
+
+
+
+
+
 
     def returnPaciente(self, numero):
         actual = self.raiz

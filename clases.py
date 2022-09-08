@@ -7,8 +7,8 @@ class Paciente:
         # Rejillas
         self.__celulas = celulas
         self.__estado = ""
+        self.__periodoContagiado = ""
         self.__patrones = patrones
-
         # NODO
         self.siguiente = None
 
@@ -28,13 +28,22 @@ class Paciente:
     def getEstado(self):
         return self.__estado
 
+    def getPeriodoContagiado(self):
+        return self.__periodoContagiado
+
+    def setPeriodoContagiado(self, periodo):
+        self.__periodoContagiado = periodo
+
+    def setEstado(self, estado):
+        self.__estado = estado
+
     # Retornar lista de celdas
     def getListaCelda(self):
         return self.__celulas
 
     def getListaPatron(self):
         return self.__patrones
-
+        
 
 #--------------------------------------------------------------------
 class Celula:
